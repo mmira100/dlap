@@ -29,9 +29,20 @@ headers = {"Content-Type": "application/json"}
 @app.get("/items")
 
 def obtener_datos_externos(warehouseId: str, itemNumber: str, request: Request):
-    
-    return{ "url_token_wms" :url_token_wms ,
-            "warehouseId"   :warehouseId } 
+    # 1. Consumir la API externa usando requests
+    response = requests.post(url, data=raw_data, headers=headers)
+    #print(response.status_code)
+    # 2. Verificar que la respuesta es correcta
+    if response.status_code == 200:
+      if response.status_code == 200:
+        for cookie in response.cookies:
+           if cookie.name == "MOCA-WS-SESSIONKEY":
+               v_token =cookie.value
+
+      return{ "url_token_wms"  : url_token_wms ,
+               "warehouseId"   : warehouseId,
+                "v_token"      : v_token 
+                 } 
 
 if __name__ == "__main__":
    import uvicorn
