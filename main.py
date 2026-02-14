@@ -10,10 +10,19 @@ app = FastAPI()
 with open("ejemplo1.txt", "w") as archivo:
     archivo.write("Este es un archivo de texto creado con Python.")
 
+#Abrir el archivo de configuración
+from pathlib import Path
+ruta_base = Path(__file__).parent 
+#archivo_ruta = ruta_base.parent / "config.json"
+archivo_ruta = ruta_base / "config.json"
+with open(archivo_ruta, 'r') as f:
+    data = json.load(f) # Lee y convierte a diccionario en un solo paso
+    url_token_wms = data["items"][0]["url_token_wms"]
+
 @app.get("/")
 
 def root():
-   return{ "url_token_wms" : "listo40"  }
+   return{ "url_token_wms0" : url_token_wms }
                        
 if __name__ == "__main__":
    import uvicorn
