@@ -6,6 +6,9 @@ import  os
 from typing import Annotated
 app= FastAPI()
 
+with open("ejemplo.txt", "w") as archivo:
+    archivo.write("Este es un archivo de texto creado con Python.")
+    
 #Abrir el archivo de configuración
 from pathlib import Path
 ruta_base = Path(__file__).parent 
