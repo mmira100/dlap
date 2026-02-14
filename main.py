@@ -39,9 +39,23 @@ def root(warehouseId: str, itemNumber: str, request: Request):
                v_token =cookie.value
         # 3. Armar la url de WMS BY para la info de items
         url_item = url_wms_item +"?warehouseId="+warehouseId+"&itemNumber="+itemNumber
-        return{ "url_token_wms1"  : url_token_wms,
-                 "v_token1"       : v_token,
-                 "url_wms_by_item": url_item }
+        # 4. Cookies se pasa el Token MOCA
+        cookies_item = {cookie.name:cookie.value}           
+        response_item = requests.get(url_item,  cookies=cookies_item)
+        # 5. Verificar que la respuesta es correcta de WMS BY Item
+        if response_item.status_code == 200:     
+           dataj = response_item.json()              
+           o_description = dataj["items"][0]["description"]  
+           o_resourceId  = dataj["items"][0]["resourceId"]
+           o_displayUom  = dataj["items"][0]["displayUom"]
+
+           return{ "items": {
+                    "itemNumber"       : itemNumber,
+                    "warehouseId"     : warehouseId,
+                    "description"     : o_description,
+                    "displayUom"      : o_displayUom
+                     }
+                   }  
                        
 if __name__ == "__main__":
    import uvicorn
