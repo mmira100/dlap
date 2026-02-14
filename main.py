@@ -48,14 +48,27 @@ def root(warehouseId: str, itemNumber: str, request: Request):
            o_description = dataj["items"][0]["description"]  
            o_resourceId  = dataj["items"][0]["resourceId"]
            o_displayUom  = dataj["items"][0]["displayUom"]
+           url_EAN       = url_wms_item +"/"+o_resourceId+"/alternates"
+           # 6. Consumir la API WMS BY para EANs
+           uomCode         = ""
+           alternateItemId = ""
+           response_alternate = requests.get(url_EAN,  cookies=cookies_item)
+           if response_alternate .status_code == 200:       
+                data_alt = response_alternate.json() 
+                #valida que el json de EANs tenga información 
+                if data_alt.get("alternateItems"):
+                   uomCode         = data_alt["alternateItems"][0]["uomCode"]             
+                   alternateItemId = data_alt["alternateItems"][0]["alternateItemId"]   
 
-           return{ "items": {
-                    "itemNumber"       : itemNumber,
-                    "warehouseId"     : warehouseId,
-                    "description"     : o_description,
-                    "displayUom"      : o_displayUom
-                     }
-                   }  
+                return{ "items": {
+                        "itemNumber"       : itemNumber,
+                        "warehouseId"      : warehouseId,
+                         "description"     : o_description,
+                         "displayUom"      : o_displayUom,
+                         "uomCode"         : uomCode,
+                         "alternateItemId" : alternateItemId
+                         }
+                       }  
                        
 if __name__ == "__main__":
    import uvicorn
