@@ -44,11 +44,30 @@ def obtener_datos_externos(warehouseId: str, itemNumber: str, request: Request):
         if response_item.status_code == 200:     
            dataj = response_item.json()              
            o_description = dataj["items"][0]["description"]  
+           o_resourceId  = dataj["items"][0]["resourceId"]
+           o_displayUom  = dataj["items"][0]["displayUom"]
 
-           return{ "url_token_wms"    : url_token_wms ,
-                   "warehouseId"      : warehouseId,
-                    "o_description"   : o_description
-                  } 
+           url_EAN       = url_wms_item +"/"+o_resourceId+"/alternates"
+           # 2. Consumir la API externa usando requests para alternates EAN              
+           uomCode         = ""
+           alternateItemId = ""
+           response_alternate = requests.get(url_EAN,  cookies=cookies_item)
+           if response_alternate .status_code == 200:       
+                data_alt = response_alternate.json() 
+                #valida que el json tenga información 
+                if data_alt.get("alternateItems"):
+                   uomCode = data_alt["alternateItems"][0]["uomCode"]             
+                   alternateItemId = data_alt["alternateItems"][0]["alternateItemId"]   
+
+                return{ 
+                        "items": {
+                        "url_token_wms"    : url_token_wms ,
+                        "warehouseId"      : warehouseId,
+                         "o_description"   : o_description,                         
+                         "uomCode EAN" : uomCode ,
+                         "alternateItemId" :alternateItemId                         
+                        }
+                       } 
 
 if __name__ == "__main__":
    import uvicorn
