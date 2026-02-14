@@ -14,10 +14,24 @@ archivo_ruta = ruta_base / "config.json"
 with open(archivo_ruta, 'r') as f:
     data = json.load(f) # Lee y convierte a diccionario en un solo paso
     url_token_wms = data["items"][0]["url_token_wms"]
+    usr_id_wms    = data["items"][0]["usr_id_wms"]
+    password_wms  = data["items"][0]["password_wms"]
+    url_wms_item  = data["items"][0]["url_wms_item"]
 
-@app.get("/")
-def root():
-    return{"hello":url_token_wms }
+# La API que queremos consumir para el token
+url = url_token_wms
+# The token parameters required by the API
+raw_data = f'{{"usr_id": "{usr_id_wms}", "password": "{password_wms}"}}'
+
+headers = {"Content-Type": "application/json"}
+
+
+@app.get("/items")
+
+def obtener_datos_externos(warehouseId: str, itemNumber: str, request: Request):
+    
+    return{ "url_token_wms" :url_token_wms ,
+            "warehouseId"   :warehouseId } 
 
 if __name__ == "__main__":
    import uvicorn
