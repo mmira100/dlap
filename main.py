@@ -27,7 +27,7 @@ url = url_token_wms
 raw_data = f'{{"usr_id": "{usr_id_wms}", "password": "{password_wms}"}}'
 headers = {"Content-Type": "application/json"}
 
-@app.get("/items")
+@app.get("/test/items")
 
 def root(warehouseId: str, itemNumber: str, request: Request):
     # 1. Consumir la API externa usando requests
@@ -56,17 +56,16 @@ def root(warehouseId: str, itemNumber: str, request: Request):
            if response_alternate .status_code == 200:       
                 data_alt = response_alternate.json() 
                 #valida que el json de EANs tenga información 
-                if data_alt.get("alternateItems"):
-                   uomCode         = data_alt["alternateItems"][0]["uomCode"]             
-                   alternateItemId = data_alt["alternateItems"][0]["alternateItemId"]   
+                alternateItems_EAN =""
+                if data_alt.get("alternateItems"):                   
+                   alternateItems_EAN  = data_alt.get("alternateItems")
 
-                return{ "items": {
-                        "itemNumber"       : itemNumber,
-                        "warehouseId"      : warehouseId,
-                         "description"     : o_description,
-                         "displayUom"      : o_displayUom,
-                         "uomCode"         : uomCode,
-                         "alternateItemId" : alternateItemId
+                return{ "items1": {
+                        "itemNumber"           : itemNumber,
+                        "warehouseId"          : warehouseId,
+                         "description"         : o_description,
+                         "displayUom"          : o_displayUom,                         
+                         "alternateItems_EAN"  : alternateItems_EAN
                          }
                        }  
                        
