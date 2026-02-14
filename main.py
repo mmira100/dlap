@@ -4,20 +4,14 @@ import requests
 import json
 import  os
 from typing import Annotated
-app= FastAPI()
 
-
-
+app = FastAPI()
 
 @app.get("/")
 
-def obtener_datos_externos():
-                   return{ 
-                        "items": {
-                        "url_token_wms"    : "listo" 
-                        }
-                       } 
-
+def root():
+   return{ "url_token_wms" : "listo2"  }
+                       
 if __name__ == "__main__":
    import uvicorn
    port= int(os.getenv("PORT",8000))
