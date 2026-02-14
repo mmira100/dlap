@@ -34,15 +34,21 @@ def obtener_datos_externos(warehouseId: str, itemNumber: str, request: Request):
     #print(response.status_code)
     # 2. Verificar que la respuesta es correcta
     if response.status_code == 200:
-      if response.status_code == 200:
         for cookie in response.cookies:
            if cookie.name == "MOCA-WS-SESSIONKEY":
                v_token =cookie.value
+    
+        url_item = url_wms_item +"?warehouseId="+warehouseId+"&itemNumber="+itemNumber
+        cookies_item = {cookie.name:cookie.value}           
+        response_item = requests.get(url_item,  cookies=cookies_item)
+        if response_item.status_code == 200:     
+           dataj = response_item.json()              
+           o_description = dataj["items"][0]["description"]  
 
-      return{ "url_token_wms"  : url_token_wms ,
-               "warehouseId"   : warehouseId,
-                "v_token"      : v_token 
-                 } 
+           return{ "url_token_wms"    : url_token_wms ,
+                   "warehouseId"      : warehouseId,
+                    "o_description"   : o_description
+                  } 
 
 if __name__ == "__main__":
    import uvicorn
