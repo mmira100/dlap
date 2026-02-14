@@ -7,10 +7,13 @@ from typing import Annotated
 
 app = FastAPI()
 
+with open("ejemplo1.txt", "w") as archivo:
+    archivo.write("Este es un archivo de texto creado con Python.")
+
 @app.get("/")
 
 def root():
-   return{ "url_token_wms" : "listo2"  }
+   return{ "url_token_wms" : "listo40"  }
                        
 if __name__ == "__main__":
    import uvicorn
